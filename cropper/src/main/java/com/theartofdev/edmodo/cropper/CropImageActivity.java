@@ -60,9 +60,16 @@ public class CropImageActivity extends AppCompatActivity
     mCropImageView = findViewById(R.id.cropImageView);
 
     Bundle bundle = getIntent().getBundleExtra(CropImage.CROP_IMAGE_EXTRA_BUNDLE);
-    mCropImageUri = bundle.getParcelable(CropImage.CROP_IMAGE_EXTRA_SOURCE);
-    mOptions = bundle.getParcelable(CropImage.CROP_IMAGE_EXTRA_OPTIONS);
-
+    if (bundle != null) {
+        mCropImageUri = bundle.getParcelable(CropImage.CROP_IMAGE_EXTRA_SOURCE);
+        mOptions = bundle.getParcelable(CropImage.CROP_IMAGE_EXTRA_OPTIONS);
+    } else {
+      /*
+      Fix for issue https://console.firebase.google.com/u/0/project/legion-5162b/crashlytics/app/android:co.legion.client/issues/c6ac478b401bfc47b8780a0b8b800f88 i.e. https://legiontech.atlassian.net/browse/MOB-2421
+       */
+      finish();
+      return;
+    }
     if (savedInstanceState == null) {
       if (mCropImageUri == null || mCropImageUri.equals(Uri.EMPTY)) {
         if (CropImage.isExplicitCameraPermissionRequired(this)) {
